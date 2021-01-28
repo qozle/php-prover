@@ -14,29 +14,30 @@
     //  Function that picks a random <p> from the whole page
     function pickRandomPTag($arrayOfPTags, $debug = false){
         // Pick random <p>
+        global $debug;
+        static $randomPTag;
         $randIndex = rand(0, count($arrayOfPTags)-1);
         $randomPTag = $arrayOfPTags[$randIndex];
         if ($debug == true){
             echo "we chose:" . $randIndex . "<br>";
             echo $randomPTag;
         }
-        $stringIsBad = ($randomPTag == " " || $randomPTag == "  " || $randomPTag == "\r\n" || $randomPTag == "\r" || $randomPTag == "\n" || str_contains($randomPTag, ":"));
+        $stringIsBad = ($randomPTag == "" || $randomPTag == " " || $randomPTag == "  " || $randomPTag == "\r\n" || $randomPTag == "\n\r" || $randomPTag == "\r" || $randomPTag == " \n" || str_contains($randomPTag, ":") || ord($randomPTag == 0) || $randomPTag == "\n " || $randomPTag == " \r" || $randomPTag == "\n" || $randomPTag == 10 || $randomPTag == "<br>");
 
         if ($stringIsBad == true && count($arrayOfPTags) > 1){
             if ($debug == true){
-                echo "<br>Random P is no good, picking another...";                
+                echo "<p>Random P is no good, picking another...</p>";                
             }
             unset($arrayOfPTags[$randIndex]);
             $arayOfPTags = array_values($arrayOfPTags);
             pickRandomPTag($arrayOfPTags);
-        } else if ($stringIsBad && count($arrayOfPTags) == 1){
+        } else if ($stringIsBad == true && count($arrayOfPTags) == 1){
             if ($debug == true){
-                echo "<br>Only one choice and it's no good, returning null";                
+                echo "<p>Only one choice and it's no good, returning null</p>";                
             }
             return null;
-        } else {
-            return $randomPTag;
-        }
+        } 
+        return $randomPTag;
         
 
     }
@@ -73,11 +74,11 @@
         libxml_clear_errors();
         $textArray = $doc->getElementsByTagName('p');
         if ($debug == true){
-            echo "<h2>all P elements:</h2><br>";                
+            echo "<h2>all P elements:</h2>";                
         }
         foreach($textArray as $text){
             if ($debug == true){
-                echo "-" . $text->nodeValue . "<br><br>";                
+                echo "<p>-" . $text->nodeValue . "</p>";                
             }
             array_push($newTextArray, $text->nodeValue);
         }
@@ -85,7 +86,7 @@
         //  Pick a random element
         $randomPTag = pickRandomPTag($newTextArray);
         if ($debug == true){
-            echo "<h2>Random p-tag:</h2><br>". $randomPTag . "<br>";                
+            echo "<h2>Random p-tag:</h2><p>". $randomPTag . "</p>";                
         }
 
 
@@ -95,20 +96,21 @@
 
             $sentencesArray = explode('. ', $randomPTag);
             if ($debug == true){
-                echo "<h2>After explode:</h2><br>";
+                echo "<h2>After explode:</h2>";
                 foreach($sentencesArray as $sentence){
-                            echo "-" . $sentence . "<br>";
+                            echo "<p>-" . $sentence . "</p>";
                 }
-                echo "<br><br>";                
             }     
 
             //  Pick a random one
             $randomSentence = pickRandomSentence($sentencesArray); 
             if ($debug == true){
                 echo "<h1>random sentence:</h2><br>";
-                echo $randomSentence;                
+                echo "<p>".$randomSentence."</p>";                
             }
             
+            //  Clean it up, remove "[]"s
+            preg_replace('/\[.+\]/', '', $randomSentence);
             //  Push it to a global array
             array_push($paragraph, $randomSentence); 
         }
@@ -122,9 +124,10 @@
             getNonsense($iterations, $debug);
         }
     }
-
+    echo "<p>";
     getNonsense(10, $debug);
     foreach ($paragraph as $sentence){
         echo $sentence . "  ";
     }
+    echo "</p>";
 ?>

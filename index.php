@@ -17,13 +17,11 @@
 }
 
 #noise {
-    height: 400px;
+    height: auto;
     width: 80%;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
-    display: flex;
-    align-items: center;
 }
 
 #noise-text {
@@ -33,6 +31,18 @@
 #loading-text {
     margin-left: auto;
     margin-right: auto;
+}
+
+h2 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+p {
+    display: block;
+    margin-left: auto;
+    margin-right:auto;
 }
 </style>
 </head>
